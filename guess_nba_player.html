@@ -1,0 +1,66 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+<title> Guess NBA Player </title>
+</head>
+<body>
+<div style="text-align: center">
+    <h1>Guess the Player</h1>
+</div>
+<div id = "img" style = "text-align: center;">
+    <img id = "playerImg" />
+</div>
+<div id = "textbox" style = "text-align:center">
+    <form action="">
+        <label for="player_name_guess">Player name:</label>
+        <input type="text" id="player_name_guess" name="player_name_guess"><br><br>
+        <input type = "button" value = "Submit" onClick  = "return guessPlayer();" >         
+    </form>
+</div>
+<div id = "streak" style = "text-align: center;">
+    <span > Streak: </span>
+    <span id = "streakCounter">0</span>
+</div>
+<script>
+getPlayer();
+var playerName = "";
+var playerImg = ""; 
+var isPrevCorrect = true;
+var streak = 0;
+function guessPlayer (){
+    var player_name_guess = document.getElementById('player_name_guess').value;
+    if (player_name_guess == playerName){
+        streak++;
+    }
+    else {
+        isPrevCorrect = false;
+        streak = 0;
+    }
+    document.getElementById('streakCounter').innerHTML = streak;
+    getPlayer();
+
+}
+function getPlayer() {
+  var request = {
+  };
+  $.ajax({
+    url: "https://nba-players.herokuapp.com/players-stats",
+    data: request,
+    dataType: "json",
+    type: "GET"
+  }).done(function(data) {
+
+    var size = data.length;
+    var rand = Math.floor(Math.random() * data.length);
+    playerName = data[rand].name;
+    var playerNameSplit = playerName.split (" ");
+    playerImg = "https://nba-players.herokuapp.com/players/" + playerNameSplit[1] + "/" + playerNameSplit[0] + "/"
+    document.getElementById('playerImg').src = playerImg;
+
+  });
+}
+
+
+</script>
+</body>
+</html>
